@@ -1,11 +1,12 @@
-from tkinter import Tk, Label, Button
+from tkinter import *
 
 import requests
 from bs4 import BeautifulSoup
 
 root = Tk()
-root.configure(bg='rosybrown3')
-root.title("Cricket Score Viewer")
+root.configure(bg='sandybrown')
+root.title("Cricket Score Viewer by SWAPNIL")
+root.geometry("350x183")
 
 def get_data(data):
     team1, team2, team1_score, team2_score, result = data
@@ -31,24 +32,27 @@ def get_data(data):
     team2_score.update()
     result.update()
 
-a = Label(text ='Cricket Live Score', font ='arial 8')
-a.grid(row=0,columnspan=2, pady=5)
-team1 = Label(text='Team 1', font='arial 20')
+a = Label(text ='Cricket Live Score by SWAPNIL', font ='arial 8')
+a.grid(row=0, columnspan=2, pady=5)
+team1 = Label(text='Team 1', font='arial 20', bg='light goldenrod')
 team1.grid(row=1, column=0)
-team2 = Label(text='Team 2', font='arial 20')
+team2 = Label(text='Team 2', font='arial 20', bg='light goldenrod')
 team2.grid(row=1, column=1)
 
-team1_score = Label(root, text='hit refresh', font='arial 20')
+team1_score = Label(root, text='hit refresh', font='arial 20', bg='light goldenrod')
 team1_score.grid(row=2, column=0, padx=5)
-team2_score = Label(text='hit refresh', font='arial 20')
+team2_score = Label(text='hit refresh', font='arial 20', bg='light goldenrod')
 team2_score.grid(row=2, column=1, padx=5)
 
-result = Label(root,text='hit refresh', font='arial 11', bg='white')
+result = Label(root, text='hit refresh', font='arial 11', bg='light goldenrod')
 result.grid(row=3, columnspan=2, pady=5)
 
 data = [team1, team2, team1_score, team2_score, result]
 ref = get_data(data)
-refresh = Button(text='Refresh', command=ref, bg='orange')
+refresh = Button(text='Refresh', command=ref, bg='black', fg='white')
 refresh.grid(row=4, columnspan=2)
+
+web = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
+web.grid(row=5, columnspan=2, pady=0)
 
 root.mainloop()
