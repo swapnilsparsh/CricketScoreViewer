@@ -26,22 +26,29 @@ def get_data(data):
         team_2 = "Name Not Found"
 
     try:
-        team_1_score = soup.find_all(
-                class_='cb-ovr-flo')[10].get_text()
+        team_1_score = soup.find_all(class_='cb-ovr-flo')[10].get_text()
+        if team_1_score == "":
+            team_1_score = "0"
+
     except IndexError:
         team_1_score = "Score Not Found"
 
     try:
-        team_2_score = soup.find_all(
-                class_='cb-ovr-flo')[12].get_text()
+        team_2_score = soup.find_all(class_='cb-ovr-flo')[12].get_text()
+        if team_2_score == "":
+            team_2_score = "0"
     except IndexError:
         team_2_score = "Score Not Found"
 
     try:
         result_score = soup.find_all(
-                class_='cb-ovr-flo cb-text-complete')[0].get_text()
+                class_='cb-ovr-flo cb-text-live')[0].get_text()
     except IndexError:
-        result_score = "Result Summary Not Found"
+        try:
+            result_score = soup.find_all(
+                    class_='cb-ovr-flo cb-text-complete')[0].get_text()
+        except IndexError:
+            result_score = "Result Summary Not Found"
 
     team1.config(text=team_1)
     team2.config(text=team_2)
