@@ -2,6 +2,9 @@ from tkinter import *
 
 import requests
 from bs4 import BeautifulSoup
+import time
+
+start = time.time()
 
 root = Tk()
 root.configure(bg='sandybrown')
@@ -26,7 +29,7 @@ def get_data(data):
         team_2 = "Name Not Found"
 
     try:
-        team_1_score = soup.find_all(class_='cb-ovr-flo')[10].get_text()
+        team_1_score = soup.find_all(class_='cb-ovr-flo')[8].get_text()
         if team_1_score == "":
             team_1_score = "0"
 
@@ -34,7 +37,7 @@ def get_data(data):
         team_1_score = "Score Not Found"
 
     try:
-        team_2_score = soup.find_all(class_='cb-ovr-flo')[12].get_text()
+        team_2_score = soup.find_all(class_='cb-ovr-flo')[10].get_text()
         if team_2_score == "":
             team_2_score = "0"
     except IndexError:
@@ -78,10 +81,25 @@ result.grid(row=3, columnspan=2, pady=5)
 
 data = [team1, team2, team1_score, team2_score, result]
 ref = get_data(data)
-refresh = Button(text='Refresh', command=ref, bg='black', fg='white')
+
+refresh = Label(text='Scores are refreshed every 2 seconds.', font='arial 20', bg='sandybrown')
 refresh.grid(row=4, columnspan=2)
 
 web = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
 web.grid(row=5, columnspan=2, pady=0)
 
-root.mainloop()
+stat = True
+def update_stat():
+    global stat
+    stat = False
+
+root.protocol("WM_DELETE_WINDOW", update_stat)
+
+while(stat == True):
+    end = time.time()
+    if(abs(((end-start)%2)-0)<=0.2):
+        data = [team1, team2, team1_score, team2_score, result]
+        ref = get_data(data)
+    root.update_idletasks()
+    root.update()
+    time.sleep(0.01)
