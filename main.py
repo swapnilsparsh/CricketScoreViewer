@@ -82,7 +82,7 @@ result.grid(row=3, columnspan=2, pady=5)
 data = [team1, team2, team1_score, team2_score, result]
 ref = get_data(data)
 
-refresh = Label(text='Scores are refreshed every 2 seconds.', font='arial 20', bg='sandybrown')
+refresh = Label(text='Scores are refreshed every 2 seconds.', font='arial 8', bg='sandybrown')
 refresh.grid(row=4, columnspan=2)
 
 web = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
