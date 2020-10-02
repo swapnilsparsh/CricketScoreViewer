@@ -10,8 +10,6 @@ root.geometry("350x183")
 onImg = PhotoImage(file="onbutton.png")
 offImg = PhotoImage(file="offbutton.png")
 
-# Night Mode:
-
 def switch():
     global btnState
     if btnState:
