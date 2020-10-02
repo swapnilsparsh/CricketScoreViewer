@@ -2,21 +2,21 @@
 <br />
 <p align="center">
   <a href="https://github.com/swapnilsparsh/CricketScoreViewer">
-    <img src="https://github.com/swapnilsparsh/CricketScoreViewer/blob/master/Image/Image.png" >
+    <img src="https://github.com/swapnilsparsh/CricketScoreViewer/blob/master/Image/Image.png" alt="There was an image" >
   </a>
 
   <h3 align="center">Cricket Score Viewer</h3>
 
   <p align="center">
-    A Simple Cricket Score Viewer developed using Python to check cricket scores 🏏
+    A Simple Cricket Score Viewer developed using Python to check cricket scores for free 🏏
     <br />
     
   </p>
 </p>
 
 ## About The Project
-Cricket Score Viewer is a Python Application that can be used to check cricket scores. Cricket Score Viewer is developed using Web Crawling Requests and Beautiful Soup.
-GUI is designed using Tkinter. Data is collected from cricbuzz.com
+Cricket Score Viewer is a Python based Application that can be used to check Cricket scores. Cricket Score Viewer is developed using Web Crawling Requests and Beautiful Soup.
+GUI is designed using Tkinter. Data is collected from cricbuzz.com. It is simple to use with understandable code and also is user friendly.
 
 ## Technology Stack
 
