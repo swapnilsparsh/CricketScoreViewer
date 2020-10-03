@@ -6,6 +6,24 @@ root = Tk()
 root.configure(bg='sandybrown')
 root.title("Cricket Score Viewer by SWAPNIL")
 root.geometry("350x183")
+onImg = PhotoImage(file="onbutton.png")
+offImg = PhotoImage(file="offbutton.png")
+
+def switch():
+    global btnState
+    if btnState:
+        btn.config(image=offImg, bg="#CECCBE", activebackground="#CECCBE")
+        root.config(bg="#CECCBE")
+        txt.config(text="Dark Mode: OFF", bg="#CECCBE")
+        btnState = False
+    else:
+        btn.config(image=onImg, bg="#2B2B2B", activebackground="#2B2B2B")
+        root.config(bg="#2B2B2B")
+        txt.config(text="Dark Mode: ON", bg="#2B2B2B")
+        btnState = True
+
+
+btnState = False
 
 refresh_time = 2*1000 # refesh after 2 sec 
 
@@ -87,7 +105,7 @@ result  = Label(root, text='hit refresh', font='arial 11', bg='light goldenrod')
 a = Label(text ='Cricket Live Score by SWAPNIL', font ='arial 8')
 a.grid(row=0, columnspan=2, pady=5)
 team1 = Label(text='Team 1', font='arial 20', bg='light goldenrod')
-team1.grid(row=1, column=0)
+team1.grid(row=1, column=0,padx=15)
 team2 = Label(text='Team 2', font='arial 20', bg='light goldenrod')
 team2.grid(row=1, column=1)
 
@@ -109,6 +127,13 @@ refresh.grid(row=4, columnspan=2)
 web = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
 web.grid(row=5, columnspan=2, pady=0)
 
+txt = Label(root, text="Dark Mode: OFF", font="FixedSys 17", bg="#CECCBE", fg="green")
+txt.grid(row=8, columnspan=2)
+btn = Button(root, text="OFF", borderwidth=0, command=switch, bg="#CECCBE", activebackground="#CECCBE", pady=1)
+btn.grid(row=7, columnspan=2,pady=20)
+btn.config(image=offImg)
+
+
 def get_data():
     """A loop callback funtion called every refresh_time sec"""
     # print("refreshing..")
@@ -125,4 +150,3 @@ except KeyboardInterrupt:
     print("Thanks for using Cricket Score Viewer")
 except Exception as e:
     print("UnKnownError:%s. Please report to the author"%str(e))
-
