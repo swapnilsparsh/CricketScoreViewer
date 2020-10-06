@@ -2,23 +2,54 @@ from tkinter import *
 import requests
 from bs4 import BeautifulSoup
 
-# Initialisation
+# Set our variables
 refresh_time = 1000* 2 # Refresh every 2 seconds
 
 # Background colors
 original_bg = "#CECCBE"
 dark_bg = "#2B2B2B"
+old_bg = 'sandybrown' # This is no longer used but can be used to replace original_bg
+label_old_bg = 'light goldenrod' # This is the old label bg before replacing w/ light/dark theme
 
 # Set up tkinter root window
 root = Tk()
 root.title("Cricket Score Viewer by SWAPNIL")
 root.configure(bg=original_bg)
 
+# Initialise Tkinter objects
+header = Label(root, text ='Cricket Live Score by SWAPNIL', font ='arial 8')
+team1 = Label(root, text='Team 1', font='arial 20', bg=original_bg)
+team2 = Label(root, text='Team 2', font='arial 20', bg=original_bg)
+team1_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
+team2_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
+result = Label(root, text='hit refresh', font='arial 11', bg=original_bg)
+refresh = Button(root, text='Refresh', command=get_data, bg=original_bg, fg=dark_bg) # Force refresh
+header = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
+darkmodetxt_label = Label(root, text="Dark Mode: OFF", font="FixedSys 17", bg=original_bg, fg="green")
+darkmode_btn = Button(root, image=offImg, borderwidth=0, command=darkmode_switch, bg=original_bg, activebackground=original_bg, pady=1)
+
+# Put our Tkinter objects on grid
+header.grid(                 row=0, columnspan=2,    pady=5)
+team1.grid(             row=1, column=0,        padx=15)
+team2.grid(             row=1, column=1)
+team2_score.grid(       row=2, column=1,        padx=5)
+team1_score.grid(       row=2, column=0,        padx=5)
+result.grid(            row=3, columnspan=2,    pady=5)
+refresh.grid(           row=4, columnspan=2,    pady=5)
+header.grid(            row=5, columnspan=2,    pady=0)
+darkmodetxt_label.grid( row=8, columnspan=2)
+darkmode_btn.grid(      row=7, columnspan=2,    pady=20)
+
+# Set objects for which we want to follow the dark/light theme
+all_objects = [team1, team2, team1_score, team2_score, result, refresh]
+
 # Darkmode button images
 onImg = PhotoImage(file="onbutton.png")
 offImg = PhotoImage(file="offbutton.png")
 
 def darkmode_switch():
+    """Function for dark/light theme button"""
+
     # Check current bg colour
     current_bg = root.cget('bg')
     
@@ -76,33 +107,6 @@ def get_data():
     
     # Loop itself
     root.after(refresh_time, get_data)
-
-# Initialise Tkinter objects
-a = Label(text ='Cricket Live Score by SWAPNIL', font ='arial 8')
-team1 = Label(text='Team 1', font='arial 20', bg=original_bg)
-team2 = Label(text='Team 2', font='arial 20', bg=original_bg)
-team1_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
-team2_score = Label(text='hit refresh', font='arial 20', bg=original_bg)
-result = Label(root, text='hit refresh', font='arial 11', bg=original_bg)
-refresh = Button(text='Refresh', command=get_data, bg=original_bg, fg=dark_bg) # Force refresh
-header = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
-darkmodetxt_label = Label(root, text="Dark Mode: OFF", font="FixedSys 17", bg=original_bg, fg="green")
-darkmode_btn = Button(root, image=offImg, borderwidth=0, command=darkmode_switch, bg=original_bg, activebackground=original_bg, pady=1)
-
-# Put our Tkinter objects on grid
-a.grid(                 row=0, columnspan=2, pady=5)
-team1.grid(             row=1, column=0, padx=15)
-team2.grid(             row=1, column=1)
-team2_score.grid(       row=2, column=1, padx=5)
-team1_score.grid(       row=2, column=0, padx=5)
-result.grid(            row=3, columnspan=2, pady=5)
-refresh.grid(           row=4, columnspan=2, pady=5)
-header.grid(            row=5, columnspan=2, pady=0)
-darkmodetxt_label.grid( row=8, columnspan=2)
-darkmode_btn.grid(      row=7, columnspan=2, pady=20)
-
-# Objects for which we want to follow the dark/light theme
-all_objects = [team1, team2, team1_score, team2_score, result, refresh]
 
 # Run get_data after mainloop starts
 root.after(0, get_data) # This triggers get_data which has a root.after ==> hence loops itself
