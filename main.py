@@ -2,147 +2,116 @@ from tkinter import *
 import requests
 from bs4 import BeautifulSoup
 
+# Set our variables
+refresh_time = 1000* 2 # Refresh every 2 seconds
+
+# Background colors
+original_bg = "#CECCBE"
+dark_bg = "#2B2B2B"
+old_bg = 'sandybrown' # This is no longer used but can be used to replace original_bg
+label_old_bg = 'light goldenrod' # This is the old label bg before replacing w/ light/dark theme
+
+# Set up tkinter root window
 root = Tk()
-root.configure(bg='sandybrown')
 root.title("Cricket Score Viewer by SWAPNIL")
-root.geometry("350x183")
+root.configure(bg=original_bg)
+
+# Initialise Tkinter objects
+header1 = Label(root, text ='Cricket Live Score by SWAPNIL', font ='arial 8')
+team1 = Label(root, text='Team 1', font='arial 20', bg=original_bg)
+team2 = Label(root, text='Team 2', font='arial 20', bg=original_bg)
+team1_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
+team2_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
+result = Label(root, text='hit refresh', font='arial 11', bg=original_bg)
+refresh = Button(root, text='Refresh', command=get_data, bg=original_bg, fg=dark_bg) # Force refresh
+header2 = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
+darkmodetxt_label = Label(root, text="Dark Mode: OFF", font="FixedSys 17", bg=original_bg, fg="green")
+darkmode_btn = Button(root, image=offImg, borderwidth=0, command=darkmode_switch, bg=original_bg, activebackground=original_bg, pady=1)
+
+# Put our Tkinter objects on grid
+header1.grid(                 row=0, columnspan=2,    pady=5)
+team1.grid(             row=1, column=0,        padx=15)
+team2.grid(             row=1, column=1)
+team2_score.grid(       row=2, column=1,        padx=5)
+team1_score.grid(       row=2, column=0,        padx=5)
+result.grid(            row=3, columnspan=2,    pady=5)
+refresh.grid(           row=4, columnspan=2,    pady=5)
+header2.grid(            row=5, columnspan=2,    pady=0)
+darkmodetxt_label.grid( row=8, columnspan=2)
+darkmode_btn.grid(      row=7, columnspan=2,    pady=20)
+
+# Set objects for which we want to follow the dark/light theme
+all_objects = [team1, team2, team1_score, team2_score, result, refresh]
+
+# Darkmode button images
 onImg = PhotoImage(file="onbutton.png")
 offImg = PhotoImage(file="offbutton.png")
 
-def switch():
-    global btnState
-    if btnState:
-        btn.config(image=offImg, bg="#CECCBE", activebackground="#CECCBE")
-        root.config(bg="#CECCBE")
-        txt.config(text="Dark Mode: OFF", bg="#CECCBE")
-        btnState = False
-    else:
-        btn.config(image=onImg, bg="#2B2B2B", activebackground="#2B2B2B")
-        root.config(bg="#2B2B2B")
-        txt.config(text="Dark Mode: ON", bg="#2B2B2B")
-        btnState = True
+def darkmode_switch():
+    """Function for dark/light theme button"""
 
-
-btnState = False
-
-refresh_time = 2*1000 # refesh after 2 sec 
-
+    # Check current bg colour
+    current_bg = root.cget('bg')
+    
+    # If current_bg is original, change new_bg to dark (vice versa)
+    if current_bg == original_bg:
+        new_bg = dark_bg
+        darkmodetxt_label.config(text="Dark Mode: ON", bg=new_bg)
+        darkmode_btn.config(image=onImg, bg=new_bg, activebackground=new_bg)
+    elif current_bg == dark_bg:
+        new_bg = original_bg
+        darkmodetxt_label.config(text="Dark Mode: OFF", bg=new_bg)
+        darkmode_btn.config(image=offImg, bg=new_bg, activebackground=new_bg)
+    
+    # Set bg to new_bg, fg to current_bg
+    
+    root.config(bg=new_bg)
+    for item in all_objects:
+        item.config(bg=new_bg, fg=current_bg)
+        
 def get_data():
     """A helper function which fetch the data and update the UI"""
-    team1, team2, team1_score, team2_score, result = data
+    
+    # URL Request
     url ='https://www.cricbuzz.com/'
     page = requests.get(url)
     soup = BeautifulSoup(page.text,'html.parser')
-    try:
-        team_1 = soup.find_all(
-                class_='cb-ovr-flo cb-hmscg-tm-nm')[0].get_text()
-    except IndexError:
-        team_1 = "Name Not Found"
 
-    try:
-        team_2 = soup.find_all(
-                class_='cb-ovr-flo cb-hmscg-tm-nm')[1].get_text()
-    except IndexError:
-        team_2 = "Name Not Found"
+    # Find our data
+    team_names = soup.find_all(class_='cb-ovr-flo cb-hmscg-tm-nm')
+    team_scores = soup.find_all(class_='cb-ovr-flo')
+    result1 = soup.find_all(class_='cb-ovr-flo cb-text-live') # empty if no ongoing game
+    result2 = soup.find_all(class_='cb-ovr-flo cb-text-complete')
 
-    try:
-        team_1_score = soup.find_all(class_='cb-ovr-flo')[10].get_text()
-        if team_1_score == "":
-            team_1_score = "0"
+    # Get name of first 2 teams competing
+    dteam1 = team_names[0].get_text()
+    dteam2 = team_names[1].get_text()
 
-    except IndexError:
-        team_1_score = "Score Not Found"
+    # Check if there is an ongoing game & save into variables data we want
+    if not result1: # check if result1 is an empty list
+        dresult = result2[0].get_text()
+        dteam1_score = team_scores[10].get_text()
+        dteam2_score = team_scores[12].get_text()
 
-    try:
-        team_2_score = soup.find_all(class_='cb-ovr-flo')[12].get_text()
-        if team_2_score == "":
-            team_2_score = "0"
-    except IndexError:
-        team_2_score = "Score Not Found"
+    else:
+        dresult = result1[0].get_text()
+        dteam1_score = team_scores[8].get_text()
+        dteam2_score = team_scores[10].get_text()
 
-    url          ='https://www.cricbuzz.com/'
-    page         = requests.get(url)
-    soup         = BeautifulSoup(page.text,'html.parser')
-    team_1       = soup.find_all(class_='cb-ovr-flo cb-hmscg-tm-nm')[0].get_text()
-    team_2       = soup.find_all(class_='cb-ovr-flo cb-hmscg-tm-nm')[1].get_text()
-    team_1_score = soup.find_all(class_='cb-ovr-flo')[8].get_text()
-    team_2_score = soup.find_all(class_='cb-ovr-flo')[10].get_text()
-    try:
-        # when there is not match, this will have no value. It may throw except IndexError.
-        result_score = soup.find_all(class_='cb-ovr-flo cb-text-live')[0].get_text()
-    except IndexError:
-        result_score = 0
-    try:
-        result_score = soup.find_all(
-                class_='cb-ovr-flo cb-text-live')[0].get_text()
-    except IndexError:
-        try:
-            result_score = soup.find_all(
-                    class_='cb-ovr-flo cb-text-complete')[0].get_text()
-        except IndexError:
-            result_score = "Result Summary Not Found"
+    # Update the text labels
+    team1.config(text=dteam1)
+    team2.config(text=dteam2)
+    team1_score.config(text=dteam1_score)
+    team2_score.config(text=dteam2_score)
+    result.config(text=dresult)
+    
+    # Loop itself
+    root.after(refresh_time, get_data)
 
-    team1.config(text=team_1)
-    team2.config(text=team_2)
-    team1_score.config(text=team_1_score)
-    team2_score.config(text=team_2_score)
-    result.config(text=result_score)
-    team1.update()
-    team2.update()
-    team1_score.update()
-    team2_score.update()
-    result.update()
+# Run get_data after mainloop starts
+root.after(0, get_data) # This triggers get_data which has a root.after ==> hence loops itself
 
-# Component defination
-a           = Label(text ='Cricket Live Score by SWAPNIL', font ='arial 8')
-team1       = Label(text='Team 1', font='arial 20', bg='light goldenrod')
-team2       = Label(text='Team 2', font='arial 20', bg='light goldenrod')
-team1_score = Label(root, text='hit refresh', font='arial 20', bg='light goldenrod')
-team2_score = Label(text='hit refresh', font='arial 20', bg='light goldenrod')
-result  = Label(root, text='hit refresh', font='arial 11', bg='light goldenrod')
-
-# Layout the components
-a = Label(text ='Cricket Live Score by SWAPNIL', font ='arial 8')
-a.grid(row=0, columnspan=2, pady=5)
-team1 = Label(text='Team 1', font='arial 20', bg='light goldenrod')
-team1.grid(row=1, column=0,padx=15)
-team2 = Label(text='Team 2', font='arial 20', bg='light goldenrod')
-team2.grid(row=1, column=1)
-
-team1_score = Label(root, text='hit refresh', font='arial 20', bg='light goldenrod')
-team1_score.grid(row=2, column=0, padx=5)
-team2_score = Label(text='hit refresh', font='arial 20', bg='light goldenrod')
-team2_score.grid(row=2, column=1, padx=5)
-
-result = Label(root, text='hit refresh', font='arial 11', bg='light goldenrod')
-result.grid(row=3, columnspan=2, pady=5)
-
-
-data = [team1, team2, team1_score, team2_score, result]
-ref = get_data()
-
-# for force refresh button 
-refresh = Button(text='Refresh', command=ref, bg='black', fg='white')
-refresh.grid(row=4, columnspan=2)
-web = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
-web.grid(row=5, columnspan=2, pady=0)
-
-txt = Label(root, text="Dark Mode: OFF", font="FixedSys 17", bg="#CECCBE", fg="green")
-txt.grid(row=8, columnspan=2)
-btn = Button(root, text="OFF", borderwidth=0, command=switch, bg="#CECCBE", activebackground="#CECCBE", pady=1)
-btn.grid(row=7, columnspan=2,pady=20)
-btn.config(image=offImg)
-
-
-def get_data():
-    """A loop callback funtion called every refresh_time sec"""
-    # print("refreshing..")
-    root.after(refresh_time, get_data)  
-
-# initial scheduling
-root.after(refresh_time, get_data)
-
-# run the app
+# Run the app
 try:
     print("CTRL + C to close or click close button")
     root.mainloop()
