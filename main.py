@@ -16,33 +16,6 @@ root = Tk()
 root.title("Cricket Score Viewer by SWAPNIL")
 root.configure(bg=original_bg)
 
-# Initialise Tkinter objects
-header1 = Label(root, text ='Cricket Live Score by SWAPNIL', font ='arial 8')
-team1 = Label(root, text='Team 1', font='arial 20', bg=original_bg)
-team2 = Label(root, text='Team 2', font='arial 20', bg=original_bg)
-team1_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
-team2_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
-result = Label(root, text='hit refresh', font='arial 11', bg=original_bg)
-refresh = Button(root, text='Refresh', command=get_data, bg=original_bg, fg=dark_bg) # Force refresh
-header2 = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
-darkmodetxt_label = Label(root, text="Dark Mode: OFF", font="FixedSys 17", bg=original_bg, fg="green")
-darkmode_btn = Button(root, image=offImg, borderwidth=0, command=darkmode_switch, bg=original_bg, activebackground=original_bg, pady=1)
-
-# Put our Tkinter objects on grid
-header1.grid(                 row=0, columnspan=2,    pady=5)
-team1.grid(             row=1, column=0,        padx=15)
-team2.grid(             row=1, column=1)
-team2_score.grid(       row=2, column=1,        padx=5)
-team1_score.grid(       row=2, column=0,        padx=5)
-result.grid(            row=3, columnspan=2,    pady=5)
-refresh.grid(           row=4, columnspan=2,    pady=5)
-header2.grid(            row=5, columnspan=2,    pady=0)
-darkmodetxt_label.grid( row=8, columnspan=2)
-darkmode_btn.grid(      row=7, columnspan=2,    pady=20)
-
-# Set objects for which we want to follow the dark/light theme
-all_objects = [team1, team2, team1_score, team2_score, result, refresh]
-
 # Darkmode button images
 onImg = PhotoImage(file="onbutton.png")
 offImg = PhotoImage(file="offbutton.png")
@@ -89,14 +62,32 @@ def get_data():
 
     # Check if there is an ongoing game & save into variables data we want
     if not result1: # check if result1 is an empty list
-        dresult = result2[0].get_text()
-        dteam1_score = team_scores[10].get_text()
-        dteam2_score = team_scores[12].get_text()
+        try:
+            dresult = result2[0].get_text()
+        except IndexError:
+            dresult = 'Not found.'
+        try:
+            dteam1_score = team_scores[10].get_text()
+        except IndexError:
+            dteam1_score = 0
+        try:
+            dteam2_score = team_scores[12].get_text()
+        except IndexError:
+            dteam2_score = 0
 
     else:
-        dresult = result1[0].get_text()
-        dteam1_score = team_scores[8].get_text()
-        dteam2_score = team_scores[10].get_text()
+        try:
+            dresult = result1[0].get_text()
+        except IndexError:
+            dresult = 'Not found.'
+        try:
+            dteam1_score = team_scores[8].get_text()
+        except IndexError:
+            dteam1_score = 0
+        try:
+            dteam2_score = team_scores[10].get_text()
+        except IndexError:
+            dteam2_score = 0
 
     # Update the text labels
     team1.config(text=dteam1)
@@ -107,6 +98,33 @@ def get_data():
     
     # Loop itself
     root.after(refresh_time, get_data)
+
+# Initialise Tkinter objects
+header1 = Label(root, text ='Cricket Live Score by SWAPNIL', font ='arial 8')
+team1 = Label(root, text='Team 1', font='arial 20', bg=original_bg)
+team2 = Label(root, text='Team 2', font='arial 20', bg=original_bg)
+team1_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
+team2_score = Label(root, text='hit refresh', font='arial 20', bg=original_bg)
+result = Label(root, text='hit refresh', font='arial 11', bg=original_bg)
+refresh = Button(root, text='Refresh', command=get_data, bg=original_bg, fg=dark_bg) # Force refresh
+header2 = Label(root, text='Data Collected from Cricbuzz', font='ariel 8')
+darkmodetxt_label = Label(root, text="Dark Mode: OFF", font="FixedSys 17", bg=original_bg, fg="green")
+darkmode_btn = Button(root, image=offImg, borderwidth=0, command=darkmode_switch, bg=original_bg, activebackground=original_bg, pady=1)
+
+# Put our Tkinter objects on grid
+header1.grid(                 row=0, columnspan=2,    pady=5)
+team1.grid(             row=1, column=0,        padx=15)
+team2.grid(             row=1, column=1)
+team2_score.grid(       row=2, column=1,        padx=5)
+team1_score.grid(       row=2, column=0,        padx=5)
+result.grid(            row=3, columnspan=2,    pady=5)
+refresh.grid(           row=4, columnspan=2,    pady=5)
+header2.grid(            row=5, columnspan=2,    pady=0)
+darkmodetxt_label.grid( row=8, columnspan=2)
+darkmode_btn.grid(      row=7, columnspan=2,    pady=20)
+
+# Set objects for which we want to follow the dark/light theme
+all_objects = [team1, team2, team1_score, team2_score, result, refresh]
 
 # Run get_data after mainloop starts
 root.after(0, get_data) # This triggers get_data which has a root.after ==> hence loops itself
