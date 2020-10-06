@@ -62,32 +62,14 @@ def get_data():
 
     # Check if there is an ongoing game & save into variables data we want
     if not result1: # check if result1 is an empty list
-        try:
-            dresult = result2[0].get_text()
-        except IndexError:
-            dresult = 'Not found.'
-        try:
-            dteam1_score = team_scores[10].get_text()
-        except IndexError:
-            dteam1_score = 0
-        try:
-            dteam2_score = team_scores[12].get_text()
-        except IndexError:
-            dteam2_score = 0
+        dresult = result2[0].get_text()
+        dteam1_score = team_scores[10].get_text()
+        dteam2_score = team_scores[12].get_text()
 
     else:
-        try:
-            dresult = result1[0].get_text()
-        except IndexError:
-            dresult = 'Not found.'
-        try:
-            dteam1_score = team_scores[8].get_text()
-        except IndexError:
-            dteam1_score = 0
-        try:
-            dteam2_score = team_scores[10].get_text()
-        except IndexError:
-            dteam2_score = 0
+        dresult = result1[0].get_text()
+        dteam1_score = team_scores[8].get_text()
+        dteam2_score = team_scores[10].get_text()
 
     # Update the text labels
     team1.config(text=dteam1)
